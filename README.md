@@ -15,7 +15,7 @@ Shows up a basic ui once application runs
 
 ## Run
 
-Isolated the containerised run at `port 8080` and spring boot run at `port 8081` so that both can be tested
+Isolated the containerised run at `port 8080` and spring boot run at `port 8081` (in case if you left container running during testing)
 
 With Docker (includes postgres 17):
 
