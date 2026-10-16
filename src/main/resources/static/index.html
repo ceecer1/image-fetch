@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Animal Picture Fetcher</title>
+    <style>
+        body { font-family: sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
+        label, button { margin: 0.25rem 0.5rem 0.25rem 0; }
+        #status { margin: 1rem 0; color: #555; }
+        img { max-width: 100%; border: 1px solid #ccc; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+<h1>Animal Picture Fetcher</h1>
+
+<div>
+    <label for="type">Animal:</label>
+    <select id="type">
+        <option value="cat">Cat</option>
+        <option value="dog">Dog</option>
+        <option value="bear">Bear</option>
+    </select>
+
+    <label for="count">Count:</label>
+    <input id="count" type="number" min="1" value="1" style="width: 4rem;">
+
+    <button onclick="fetchPictures()">Fetch &amp; Save</button>
+    <button onclick="showLast()">Show Last</button>
+</div>
+
+<div id="status"></div>
+<img id="picture" alt="" hidden>
+
+<script>
+    function type() { return document.getElementById('type').value; }
+
+    async function fetchPictures() {
+        const count = document.getElementById('count').value;
+        const status = document.getElementById('status');
+        status.textContent = 'Fetching…';
+        try {
+            const res = await fetch(`/api/pictures/${type()}?count=${count}`, { method: 'POST' });
+            if (!res.ok) throw new Error(await res.text());
+            const saved = await res.json();
+            status.textContent = `Saved ${saved.length} ${type()} picture(s).`;
+            showLast();
+        } catch (e) {
+            status.textContent = 'Error: ' + e.message;
+        }
+    }
+
+    function showLast() {
+        const img = document.getElementById('picture');
+        img.src = `/api/pictures/${type()}/last?t=${Date.now()}`;
+        img.hidden = false;
+        img.alt = `Last ${type()} picture`;
+    }
+</script>
+</body>
+</html>
